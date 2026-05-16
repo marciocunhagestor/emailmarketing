@@ -10,10 +10,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Initialise DB once; queue requests until ready
+// Initialise DB once; queue requests until ready (8s timeout so Vercel doesn't hang)
 let ready = false;
 let initError = null;
-const initPromise = initDb().then(() => { ready = true; }).catch(err => { initError = err; ready = true; });
+const initPromise = Promise.race([
+  initDb(),
+  new Promise((_, reject) => setTimeout(() => reject(new Error('DB init timed out after 8s')), 8000)),
+]).then(() => { ready = true; }).catch(err => { initError = err; ready = true; console.error('[init]', err.message); });
 
 app.use(async (req, res, next) => {
   if (!ready) await initPromise;

@@ -1,12 +1,22 @@
-const { createClient } = require('@libsql/client');
+const { createClient } = require('@libsql/client/http');
 
-const isVercel = !!process.env.VERCEL;
-const defaultUrl = isVercel ? 'file:/tmp/emailmarketing.db' : 'file:emailmarketing.db';
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoToken = process.env.TURSO_AUTH_TOKEN;
 
-const client = createClient({
-  url: process.env.TURSO_DATABASE_URL || defaultUrl,
-  authToken: process.env.TURSO_AUTH_TOKEN || undefined,
-});
+if (!tursoUrl) {
+  console.warn('[DB] TURSO_DATABASE_URL not set — database will be unavailable');
+}
+
+let client;
+try {
+  client = createClient({
+    url: tursoUrl || 'http://localhost:0',
+    authToken: tursoToken || undefined,
+  });
+} catch (e) {
+  console.error('[DB] createClient failed:', e.message);
+  client = { execute: async () => { throw new Error('Database client failed to initialize: ' + e.message); } };
+}
 
 function toObj(row, columns) {
   const obj = {};
