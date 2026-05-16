@@ -1,0 +1,2982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EmailFlow — Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sidebar: #1a1a2e;
+    --sidebar-border: #252540;
+    --accent: #e94560;
+    --accent-hover: #c73652;
+    --accent-glow: rgba(233,69,96,0.15);
+    --bg: #f8f7f4;
+    --surface: #ffffff;
+    --surface-2: #f2f1ee;
+    --border: #e8e6e1;
+    --text: #1a1a2e;
+    --text-2: #6b6880;
+    --text-3: #a09db0;
+    --success: #2ecc71;
+    --success-bg: #eafaf1;
+    --warning: #f39c12;
+    --warning-bg: #fef9ee;
+    --info: #3498db;
+    --info-bg: #eaf4fd;
+    --danger: #e74c3c;
+    --danger-bg: #fdf0ef;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(26,26,46,0.07);
+    --shadow-lg: 0 8px 32px rgba(26,26,46,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--sidebar);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    border-right: 1px solid var(--sidebar-border);
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .logo-mark {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-dot {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .logo-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #5a5875;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #3d3b55;
+    padding: 8px 12px 6px;
+    margin-top: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #8885a0;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: #d0cedf; }
+  .nav-item.active { background: var(--accent-glow); color: #fff; }
+  .nav-item.active .nav-icon { color: var(--accent); }
+
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--sidebar-border);
+  }
+
+  .webhook-box {
+    background: rgba(233,69,96,0.1);
+    border: 1px solid rgba(233,69,96,0.2);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .webhook-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .webhook-url {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #8885a0;
+    word-break: break-all;
+    line-height: 1.5;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+  }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(231,76,60,0.25); }
+  .btn-danger:hover { background: var(--danger-bg); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #27ae60; }
+  .btn-sm { padding: 5px 11px; font-size: 12.5px; border-radius: 6px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── STATS GRID ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .stat-card.accent::before { background: var(--accent); }
+  .stat-card.success::before { background: var(--success); }
+  .stat-card.info::before { background: var(--info); }
+  .stat-card.warning::before { background: var(--warning); }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 16px;
+  }
+
+  .stat-card.accent .stat-icon { background: var(--accent-glow); color: var(--accent); }
+  .stat-card.success .stat-icon { background: var(--success-bg); color: var(--success); }
+  .stat-card.info .stat-icon { background: var(--info-bg); color: var(--info); }
+  .stat-card.warning .stat-icon { background: var(--warning-bg); color: var(--warning); }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-3);
+    font-weight: 400;
+  }
+
+  /* ── CARDS / TABLES ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    background: var(--surface-2);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
+
+  tbody td {
+    padding: 11px 16px;
+    font-size: 13.5px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  .td-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-2);
+  }
+
+  .td-actions { display: flex; gap: 6px; align-items: center; }
+
+  .empty-state {
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--text-3);
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; margin-bottom: 4px; color: var(--text-2); font-weight: 500; }
+  .empty-sub { font-size: 12px; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .badge-gray { background: var(--surface-2); color: var(--text-2); }
+  .badge-blue { background: var(--info-bg); color: var(--info); }
+  .badge-yellow { background: var(--warning-bg); color: var(--warning); }
+  .badge-green { background: var(--success-bg); color: var(--success); }
+  .badge-red { background: var(--danger-bg); color: var(--danger); }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-wrap input:focus { border-color: var(--accent); }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-3);
+    width: 16px;
+    height: 16px;
+  }
+
+  .filter-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* ── PAGINATION ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    justify-content: space-between;
+  }
+
+  .pagination-info { font-size: 12.5px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+  .pagination-btns { display: flex; gap: 4px; }
+
+  .page-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--text-2);
+    transition: all 0.12s;
+  }
+
+  .page-btn:hover { background: var(--surface-2); }
+  .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── AUTOMATIONS ── */
+  .auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .auto-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .auto-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .auto-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .auto-trigger {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 38px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch input { display: none; }
+
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .toggle-switch input:checked + .toggle-track { background: var(--success); }
+  .toggle-switch input:checked + .toggle-track::after { transform: translateX(16px); }
+
+  .steps-timeline { margin-top: 14px; }
+
+  .step-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    position: relative;
+  }
+
+  .step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 26px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .step-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-glow);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-info { flex: 1; }
+
+  .step-title { font-size: 12.5px; font-weight: 500; color: var(--text); }
+  .step-delay { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+  /* ── TEMPLATES GRID ── */
+  .tpl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .tpl-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.15s;
+  }
+
+  .tpl-card:hover { box-shadow: var(--shadow-lg); }
+
+  .tpl-preview {
+    height: 120px;
+    background: linear-gradient(135deg, var(--surface-2) 0%, var(--border) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tpl-preview-html {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .tpl-preview-html iframe {
+    width: 200%;
+    height: 200%;
+    transform: scale(0.5);
+    transform-origin: top left;
+    border: none;
+    pointer-events: none;
+  }
+
+  .tpl-body { padding: 14px 16px; }
+  .tpl-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .tpl-subject { font-size: 12px; color: var(--text-3); margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tpl-actions { display: flex; gap: 6px; }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  input[type=text], input[type=email], input[type=password], input[type=number],
+  input[type=datetime-local], select, textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+  textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .hint { font-size: 11.5px; color: var(--text-3); margin-top: 5px; line-height: 1.5; }
+
+  .hint code {
+    font-family: 'DM Mono', monospace;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,46,0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(26,26,46,0.25);
+    transform: translateY(12px);
+    transition: transform 0.2s;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-lg { max-width: 720px; }
+
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    font-size: 18px;
+    transition: all 0.12s;
+  }
+
+  .modal-close:hover { background: var(--surface-2); }
+
+  .modal-body { padding: 20px 24px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* ── TABS (template editor) ── */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+
+  .tab-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  .preview-frame {
+    width: 100%;
+    height: 300px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  /* ── STEPS BUILDER ── */
+  .steps-builder { display: flex; flex-direction: column; gap: 10px; }
+
+  .step-builder-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    background: var(--bg);
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .step-builder-item .form-group { margin-bottom: 0; flex: 1; }
+
+  /* ── WEBHOOK ── */
+  .wh-field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .wh-field-dest {
+    width: 130px;
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .wh-field-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+  }
+
+  .wh-field-input:focus { border-color: var(--accent); }
+
+  .wh-code-block {
+    background: var(--sidebar);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .wh-code-label {
+    padding: 7px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5a5875;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .wh-code {
+    padding: 12px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    color: #c8c5e0;
+    margin: 0;
+    overflow-x: auto;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  /* ── SETTINGS / GUIDE ── */
+  .guide-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .guide-step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .guide-step-header:hover { background: var(--bg); }
+
+  .guide-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .guide-step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .guide-step-sub {
+    font-size: 12.5px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .guide-chevron {
+    font-size: 12px;
+    color: var(--text-3);
+    transition: transform 0.2s;
+  }
+
+  .guide-chevron.open { transform: rotate(180deg); }
+
+  .guide-step-body {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .guide-tip {
+    background: var(--info-bg);
+    border: 1px solid #aed6f1;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text);
+    margin: 16px 0 16px;
+    line-height: 1.6;
+  }
+
+  .guide-alert {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #5d4037;
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+
+  .guide-instruction {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-3);
+    margin-bottom: 10px;
+  }
+
+  .guide-steps-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .guide-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .guide-item-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--text-2);
+    margin-top: 1px;
+  }
+
+  .guide-highlight {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .guide-mockup {
+    background: var(--sidebar);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mockup-field {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12.5px;
+  }
+
+  .mockup-label {
+    color: #6b6880;
+    min-width: 140px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  .mockup-value {
+    color: #e0dff5;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .guide-what {
+    font-size: 11px;
+    color: var(--info);
+    border: 1px solid var(--info);
+    border-radius: 20px;
+    padding: 1px 8px;
+    margin-left: 6px;
+    cursor: default;
+    vertical-align: middle;
+  }
+
+  .guide-field-group {
+    margin-bottom: 18px;
+  }
+
+  .guide-field-label {
+    font-weight: 600;
+    font-size: 13.5px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .guide-field-explain {
+    font-size: 12.5px;
+    color: var(--text-2);
+    margin-bottom: 8px;
+    line-height: 1.6;
+    background: var(--surface-2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .security-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 140px;
+    background: var(--surface);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .security-option:hover { border-color: var(--text-3); }
+  .security-option.selected { border-color: var(--accent); background: var(--accent-glow); }
+
+  .error-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .error-title {
+    background: var(--surface-2);
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .error-solution {
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* ── TOAST ── */
+  .toasts {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toast {
+    background: var(--sidebar);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.25s ease;
+    max-width: 320px;
+  }
+
+  .toast.success .toast-icon { color: var(--success); }
+  .toast.error .toast-icon { color: var(--accent); }
+
+  @keyframes slideIn { from { transform: translateX(24px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .section-title-wrap .page-title { font-size: 22px; }
+  .section-title-wrap .page-sub { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-dot">✉</div>
+      EmailFlow
+    </div>
+    <div class="logo-sub">Marketing Platform</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Principal</div>
+    <div class="nav-item active" data-page="dashboard">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-page="contacts">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Contatos
+    </div>
+    <div class="nav-item" data-page="campaigns">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.95 3.4 2 2 0 0 1 3.93 1.2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Campanhas
+    </div>
+    <div class="nav-item" data-page="automations">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Automações
+    </div>
+    <div class="nav-item" data-page="templates">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Templates
+    </div>
+    <div class="nav-label">Sistema</div>
+    <div class="nav-item" data-page="webhook">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/><circle cx="18" cy="7" r="3"/><circle cx="6" cy="11" r="3"/></svg>
+      Webhook
+    </div>
+    <div class="nav-item" data-page="settings">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 1 1-14.14 0"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+      Configurações
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="webhook-box">
+      <div class="webhook-label">Webhook URL</div>
+      <div class="webhook-url" id="webhook-display">http://localhost:3000/webhook</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-actions" id="topbar-actions"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card accent">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="stat-contacts">—</div>
+          <div class="stat-label">Contatos ativos</div>
+        </div>
+        <div class="stat-card info">
+          <div class="stat-icon">📣</div>
+          <div class="stat-value" id="stat-campaigns">—</div>
+          <div class="stat-label">Campanhas</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" id="stat-automations">—</div>
+          <div class="stat-label">Automações ativas</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-icon">✉️</div>
+          <div class="stat-value" id="stat-emails">—</div>
+          <div class="stat-label">Emails enviados</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Contatos recentes</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Fonte</th>
+                <th>Campanha UTM</th>
+                <th>Cadastro</th>
+              </tr>
+            </thead>
+            <tbody id="recent-contacts-body">
+              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Nenhum contato ainda</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACTS -->
+    <div class="section" id="page-contacts">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="contact-search" placeholder="Buscar por nome ou email…">
+        </div>
+        <select class="filter-select" id="contact-status-filter">
+          <option value="">Todos os status</option>
+          <option value="active">Ativo</option>
+          <option value="unsubscribed">Descadastrado</option>
+        </select>
+        <select class="filter-select" id="contact-list-filter">
+          <option value="">Todas as listas</option>
+        </select>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="openModal('modal-list')">+ Nova lista</button>
+          <button class="btn btn-primary" onclick="openModal('modal-contact')">+ Contato</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>UTM Source</th>
+                <th>UTM Campaign</th>
+                <th>Status</th>
+                <th>Cadastro</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="contacts-body"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="pagination-info" id="contacts-pagination-info"></div>
+          <div class="pagination-btns" id="contacts-pagination"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS -->
+    <div class="section" id="page-campaigns">
+      <div class="toolbar">
+        <div style="margin-left:auto;">
+          <button class="btn btn-primary" onclick="openCampaignModal()">+ Nova campanha</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Lista</th>
+                <th>Status</th>
+                <th>Enviados</th>
+                <th>Agendado para</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="campaigns-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTOMATIONS -->
+    <div class="section" id="page-automations">
+      <div class="toolbar">
+        <div style="margin-left:auto;">
+          <button class="btn btn-primary" onclick="openAutoModal()">+ Nova automação</button>
+        </div>
+      </div>
+      <div class="auto-grid" id="automations-grid"></div>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="section" id="page-templates">
+      <div class="toolbar">
+        <div style="margin-left:auto;">
+          <button class="btn btn-primary" onclick="openTemplateModal()">+ Novo template</button>
+        </div>
+      </div>
+      <div class="tpl-grid" id="templates-grid"></div>
+    </div>
+
+    <!-- WEBHOOK -->
+    <div class="section" id="page-webhook">
+      <div style="max-width:900px;display:flex;flex-direction:column;gap:20px;">
+
+        <!-- URL CARD -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔗 URL do Webhook</span>
+            <span style="font-size:12.5px;color:var(--text-3);">Cole este endereço no seu formulário para receber os dados aqui</span>
+          </div>
+          <div style="padding:20px;">
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div style="flex:1;background:var(--sidebar);border-radius:8px;padding:13px 16px;font-family:'DM Mono',monospace;font-size:13px;color:#e0dff5;word-break:break-all;" id="wh-url-display"></div>
+              <button class="btn btn-primary" onclick="copyWebhookUrl()" id="wh-copy-btn" style="flex-shrink:0;">📋 Copiar</button>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+              <div style="background:var(--info-bg);border:1px solid #aed6f1;border-radius:8px;padding:10px 14px;font-size:13px;flex:1;min-width:220px;">
+                <strong>Método:</strong> <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;">POST</code><br>
+                <strong>Formato:</strong> <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;">JSON</code> ou <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;">form-data</code>
+              </div>
+              <div style="background:var(--success-bg);border:1px solid #a9dfbf;border-radius:8px;padding:10px 14px;font-size:13px;flex:1;min-width:220px;">
+                <strong>Campo obrigatório:</strong> <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;">email</code><br>
+                <strong>Resposta:</strong> <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 6px;border-radius:4px;">{"success":true,"contact_id":1}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONFIG GRID -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+          <!-- FIELD MAPPING -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">🗂️ Mapeamento de campos</span>
+            </div>
+            <div style="padding:20px;">
+              <p style="font-size:13px;color:var(--text-2);margin-bottom:16px;line-height:1.6;">
+                Se o seu formulário usa nomes diferentes (ex: <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 5px;border-radius:4px;">nome</code> em vez de <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 5px;border-radius:4px;">name</code>), configure aqui. Separe múltiplas opções com vírgula.
+              </p>
+
+              <div class="wh-field-row">
+                <div class="wh-field-dest">📧 email <span class="badge badge-red" style="font-size:10px;">obrigatório</span></div>
+                <input class="wh-field-input" type="text" id="fm-email" placeholder="email">
+              </div>
+              <div class="wh-field-row">
+                <div class="wh-field-dest">👤 name</div>
+                <input class="wh-field-input" type="text" id="fm-name" placeholder="name, nome">
+              </div>
+              <div class="wh-field-row">
+                <div class="wh-field-dest">📱 phone</div>
+                <input class="wh-field-input" type="text" id="fm-phone" placeholder="phone, telefone, celular">
+              </div>
+              <div class="wh-field-row">
+                <div class="wh-field-dest">📊 utm_source</div>
+                <input class="wh-field-input" type="text" id="fm-utm_source" placeholder="utm_source">
+              </div>
+              <div class="wh-field-row">
+                <div class="wh-field-dest">📊 utm_medium</div>
+                <input class="wh-field-input" type="text" id="fm-utm_medium" placeholder="utm_medium">
+              </div>
+              <div class="wh-field-row">
+                <div class="wh-field-dest">📊 utm_campaign</div>
+                <input class="wh-field-input" type="text" id="fm-utm_campaign" placeholder="utm_campaign">
+              </div>
+              <div class="wh-field-row">
+                <div class="wh-field-dest">📊 utm_term</div>
+                <input class="wh-field-input" type="text" id="fm-utm_term" placeholder="utm_term">
+              </div>
+              <div class="wh-field-row" style="border-bottom:none;margin-bottom:0;">
+                <div class="wh-field-dest">📊 utm_content</div>
+                <input class="wh-field-input" type="text" id="fm-utm_content" placeholder="utm_content">
+              </div>
+
+              <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">📋 Lista padrão para novos contatos</label>
+                <p style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Contatos do webhook serão adicionados automaticamente a esta lista</p>
+                <select id="wh-default-list" style="width:100%;">
+                  <option value="">Nenhuma (não adicionar a lista)</option>
+                </select>
+              </div>
+
+              <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">🔐 Secret de segurança <span style="font-weight:400;color:var(--text-3)">(opcional)</span></label>
+                <p style="font-size:12px;color:var(--text-3);margin-bottom:8px;">Se preenchido, o webhook só aceita requisições com o header <code style="font-family:'DM Mono',monospace;background:var(--surface-2);padding:1px 5px;border-radius:4px;">X-Webhook-Secret</code> igual a este valor</p>
+                <input type="text" id="wh-secret" placeholder="Deixe em branco para não usar" style="font-family:'DM Mono',monospace;">
+              </div>
+
+              <button class="btn btn-primary" onclick="saveWebhookConfig()" style="width:100%;justify-content:center;margin-top:16px;">
+                💾 Salvar configuração
+              </button>
+            </div>
+          </div>
+
+          <!-- TEST PANEL -->
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">🧪 Testar webhook</span>
+              </div>
+              <div style="padding:20px;">
+                <p style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.6;">Envie um payload de teste para simular um formulário sendo preenchido. Os campos abaixo são o que seu formulário vai enviar.</p>
+
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div>
+                    <label style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:4px;display:block;">Campo email (obrigatório)</label>
+                    <input type="email" id="test-email" placeholder="teste@exemplo.com" value="teste@exemplo.com">
+                  </div>
+                  <div>
+                    <label style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:4px;display:block;">Campo nome</label>
+                    <input type="text" id="test-name" placeholder="João Silva" value="João Silva">
+                  </div>
+                  <div>
+                    <label style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:4px;display:block;">Campo telefone</label>
+                    <input type="text" id="test-phone" placeholder="(11) 99999-9999">
+                  </div>
+                  <div class="form-row">
+                    <div>
+                      <label style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:4px;display:block;">utm_source</label>
+                      <input type="text" id="test-utm_source" placeholder="google" value="google">
+                    </div>
+                    <div>
+                      <label style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:4px;display:block;">utm_campaign</label>
+                      <input type="text" id="test-utm_campaign" placeholder="promo-junho" value="promo-junho">
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top:14px;background:var(--bg);border-radius:8px;border:1px solid var(--border);overflow:hidden;">
+                  <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;justify-content:space-between;">
+                    Payload JSON que será enviado
+                    <span id="test-payload-update" style="color:var(--text-3);font-size:10px;font-weight:400;">atualiza ao digitar</span>
+                  </div>
+                  <pre id="test-payload-preview" style="padding:12px;font-family:'DM Mono',monospace;font-size:11.5px;color:var(--text-2);margin:0;overflow-x:auto;line-height:1.6;"></pre>
+                </div>
+
+                <button class="btn btn-primary" onclick="sendTestWebhook()" style="width:100%;justify-content:center;margin-top:14px;">
+                  ▶ Enviar teste
+                </button>
+                <div id="test-wh-result" style="display:none;margin-top:12px;"></div>
+              </div>
+            </div>
+
+            <!-- EXAMPLE PAYLOAD -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">📄 Exemplo de payload</span>
+              </div>
+              <div style="padding:16px 20px;">
+                <p style="font-size:12.5px;color:var(--text-2);margin-bottom:12px;">Como integrar com seu formulário (Elementor, RD Station, ActiveCampaign, etc.):</p>
+                <div class="wh-code-block">
+                  <div class="wh-code-label">JSON (API / JavaScript)</div>
+                  <pre class="wh-code">POST <span id="ex-url"></span>
+Content-Type: application/json
+
+{
+  "email": "lead@email.com",
+  "name": "Maria Silva",
+  "phone": "(11) 99999-9999",
+  "utm_source": "facebook",
+  "utm_medium": "cpc",
+  "utm_campaign": "black-friday",
+  "list_id": 1
+}</pre>
+                </div>
+                <div class="wh-code-block" style="margin-top:12px;">
+                  <div class="wh-code-label">cURL (linha de comando)</div>
+                  <pre class="wh-code" id="ex-curl"></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /config grid -->
+
+        <!-- LOGS -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📋 Últimas chegadas (logs)</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadWebhookLogs()">↺ Atualizar</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data/hora</th>
+                  <th>Contato</th>
+                  <th>Email</th>
+                  <th>Fonte</th>
+                  <th>Payload recebido</th>
+                </tr>
+              </thead>
+              <tbody id="wh-logs-body">
+                <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Nenhum webhook recebido ainda</div><div class="empty-sub">Quando alguém preencher o formulário, aparece aqui</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="page-settings">
+      <div style="max-width:1100px;">
+
+        <!-- GUIDE HEADER -->
+        <div style="background:linear-gradient(135deg,#1a1a2e 0%,#2d2b52 100%);border-radius:14px;padding:24px 28px;margin-bottom:24px;color:#fff;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:40px;line-height:1;">📧</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px;">Configure seu email do cPanel</div>
+            <div style="font-size:13px;color:#a09db0;line-height:1.5;">Leia o guia à esquerda e preencha o formulário à direita. É só seguir os passos! 👇</div>
+          </div>
+        </div>
+
+        <!-- TWO COLUMN LAYOUT -->
+        <div style="display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start;">
+
+        <!-- LEFT: GUIDE --><div>
+
+        <!-- STEP 1 -->
+        <div class="guide-step" id="gstep-1">
+          <div class="guide-step-header" onclick="toggleStep(1)">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="guide-num">1</div>
+              <div>
+                <div class="guide-step-title">Abra o cPanel da sua hospedagem</div>
+                <div class="guide-step-sub">Você vai encontrar o endereço no email que a hospedagem te enviou</div>
+              </div>
+            </div>
+            <div class="guide-chevron" id="chev-1">▼</div>
+          </div>
+          <div class="guide-step-body" id="gbody-1">
+            <div class="guide-tip">
+              💡 <strong>O que é o cPanel?</strong> É um painel de controle da sua hospedagem onde você gerencia emails, sites e arquivos. É como o "painel de controle" do Windows, mas da sua hospedagem.
+            </div>
+            <div class="guide-instruction">Como acessar:</div>
+            <div class="guide-steps-list">
+              <div class="guide-item">
+                <div class="guide-item-num">①</div>
+                <div>Abra um <strong>navegador</strong> (Chrome, Firefox, Edge…)</div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">②</div>
+                <div>Na barra de endereço, digite: <span class="guide-code">https://seudominio.com/cpanel</span><br><span style="color:var(--text-3);font-size:12px;">Troque "seudominio.com" pelo seu domínio. Ex: <em>https://meusite.com.br/cpanel</em></span></div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">③</div>
+                <div>Vai aparecer uma tela pedindo <strong>usuário e senha</strong> — use os dados que a hospedagem te enviou por email</div>
+              </div>
+            </div>
+            <div class="guide-alert">
+              🔍 <strong>Não sabe o endereço?</strong> Procure no email de boas-vindas da sua hospedagem (Hostinger, HostGator, GoDaddy, Locaweb…). Geralmente está escrito "Acesso ao cPanel" ou "Painel de Controle".
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="guide-step" id="gstep-2">
+          <div class="guide-step-header" onclick="toggleStep(2)">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="guide-num">2</div>
+              <div>
+                <div class="guide-step-title">Crie uma conta de email</div>
+                <div class="guide-step-sub">Vamos criar o email que vai enviar as mensagens — ex: contato@seusite.com</div>
+              </div>
+            </div>
+            <div class="guide-chevron" id="chev-2">▼</div>
+          </div>
+          <div class="guide-step-body" id="gbody-2" style="display:none;">
+            <div class="guide-tip">
+              💡 <strong>Por que criar um email novo?</strong> É melhor usar um email do seu domínio (ex: marketing@seusite.com) para que os emails não caiam no spam.
+            </div>
+            <div class="guide-instruction">Siga esses passos dentro do cPanel:</div>
+            <div class="guide-steps-list">
+              <div class="guide-item">
+                <div class="guide-item-num">①</div>
+                <div>Procure a seção chamada <span class="guide-highlight">📧 Email</span> na página do cPanel</div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">②</div>
+                <div>Clique em <span class="guide-highlight">Contas de Email</span> (ou "Email Accounts")</div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">③</div>
+                <div>Clique no botão <span class="guide-highlight" style="background:#e8f5e9;color:#2e7d32;">+ Criar</span> (ou "Create")</div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">④</div>
+                <div>
+                  Preencha assim:<br>
+                  <div class="guide-mockup">
+                    <div class="mockup-field"><span class="mockup-label">Nome de usuário:</span> <span class="mockup-value">marketing</span> <span style="color:var(--text-3);">@seusite.com</span></div>
+                    <div class="mockup-field"><span class="mockup-label">Senha:</span> <span class="mockup-value">Crie uma senha forte e <strong>anote ela!</strong></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">⑤</div>
+                <div>Clique em <span class="guide-highlight" style="background:#e3f2fd;color:#1565c0;">Criar Conta</span></div>
+              </div>
+            </div>
+            <div class="guide-alert" style="background:#fff3e0;border-color:#ff9800;">
+              📝 <strong>ANOTE AGORA:</strong> O email que você criou e a senha. Você vai precisar deles no Passo 5.
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="guide-step" id="gstep-3">
+          <div class="guide-step-header" onclick="toggleStep(3)">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="guide-num">3</div>
+              <div>
+                <div class="guide-step-title">Encontre as configurações SMTP</div>
+                <div class="guide-step-sub">Vamos pegar o "endereço" do servidor de email — como um CEP, mas para emails</div>
+              </div>
+            </div>
+            <div class="guide-chevron" id="chev-3">▼</div>
+          </div>
+          <div class="guide-step-body" id="gbody-3" style="display:none;">
+            <div class="guide-tip">
+              💡 <strong>O que é o servidor SMTP?</strong> É o "correio" que entrega seus emails. Você precisa do endereço dele para o sistema saber para onde mandar as mensagens.
+            </div>
+            <div class="guide-instruction">Como encontrar:</div>
+            <div class="guide-steps-list">
+              <div class="guide-item">
+                <div class="guide-item-num">①</div>
+                <div>Na lista de emails criados, procure pelo email que você acabou de criar (ex: marketing@seusite.com)</div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">②</div>
+                <div>Clique em <span class="guide-highlight">Conectar Dispositivos</span> (ou "Connect Devices" / "Configure Mail Client")</div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">③</div>
+                <div>
+                  Vai aparecer uma tabela com as configurações. Procure por <strong>"Servidor de Saída (SMTP)"</strong> ou <strong>"Outgoing Server"</strong>:<br><br>
+                  <div class="guide-mockup" style="font-family:'DM Mono',monospace;">
+                    <div class="mockup-field"><span class="mockup-label">Servidor / Host:</span> <span class="mockup-value" style="color:var(--accent);">mail.seudominio.com</span></div>
+                    <div class="mockup-field"><span class="mockup-label">Porta SSL:</span> <span class="mockup-value" style="color:var(--accent);">465</span></div>
+                    <div class="mockup-field"><span class="mockup-label">Porta TLS/STARTTLS:</span> <span class="mockup-value" style="color:var(--accent);">587</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-item-num">④</div>
+                <div>📸 <strong>Tire um print ou anote esses valores!</strong> Você vai precisar deles no próximo passo.</div>
+              </div>
+            </div>
+            <div class="guide-alert">
+              🤔 <strong>Não achou "Conectar Dispositivos"?</strong> Tudo bem! O servidor SMTP no cPanel é quase sempre <code style="background:var(--surface-2);padding:2px 6px;border-radius:4px;font-family:'DM Mono',monospace;">mail.seudominio.com</code> — só troque "seudominio.com" pelo seu domínio real.
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 (guide only, no form here) -->
+        <div class="guide-step" id="gstep-4">
+          <div class="guide-step-header" onclick="toggleStep(4)">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="guide-num">4</div>
+              <div>
+                <div class="guide-step-title">Preencha o formulário ao lado →</div>
+                <div class="guide-step-sub">Use as informações anotadas nos passos anteriores</div>
+              </div>
+            </div>
+            <div class="guide-chevron" id="chev-4">▼</div>
+          </div>
+          <div class="guide-step-body" id="gbody-4" style="display:none;">
+            <div class="guide-tip">
+              💡 O formulário está <strong>à direita desta tela</strong>. Preencha cada campo com os dados que você copiou do cPanel. Aqui está o que colocar em cada um:
+            </div>
+            <div class="guide-steps-list">
+              <div class="guide-item"><div class="guide-item-num">①</div><div><strong>Servidor SMTP</strong> → É o host que você viu no cPanel. Ex: <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;">mail.seusite.com.br</code></div></div>
+              <div class="guide-item"><div class="guide-item-num">②</div><div><strong>Segurança</strong> → Escolha SSL (porta 465). Se der erro, tente TLS (porta 587)</div></div>
+              <div class="guide-item"><div class="guide-item-num">③</div><div><strong>Email</strong> → O email completo que você criou. Ex: <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;">marketing@seusite.com</code></div></div>
+              <div class="guide-item"><div class="guide-item-num">④</div><div><strong>Senha</strong> → A senha que você criou para esse email no cPanel</div></div>
+              <div class="guide-item"><div class="guide-item-num">⑤</div><div><strong>Nome remetente</strong> → O nome que as pessoas vão ver no email recebido</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5 (guide only) -->
+        <div class="guide-step" id="gstep-5">
+          <div class="guide-step-header" onclick="toggleStep(5)">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="guide-num">5</div>
+              <div>
+                <div class="guide-step-title">Salve e teste a conexão</div>
+                <div class="guide-step-sub">Clique nos botões no formulário à direita</div>
+              </div>
+            </div>
+            <div class="guide-chevron" id="chev-5">▼</div>
+          </div>
+          <div class="guide-step-body" id="gbody-5" style="display:none;">
+            <div class="guide-steps-list">
+              <div class="guide-item"><div class="guide-item-num">①</div><div>Clique em <strong>"💾 Salvar configurações"</strong> no formulário ao lado</div></div>
+              <div class="guide-item"><div class="guide-item-num">②</div><div>Depois clique em <strong>"🔌 Testar conexão"</strong></div></div>
+              <div class="guide-item"><div class="guide-item-num">③</div><div>Se aparecer ✅ verde — perfeito, está tudo funcionando!</div></div>
+              <div class="guide-item"><div class="guide-item-num">④</div><div>Se aparecer ❌ vermelho — veja a seção de erros abaixo</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TROUBLESHOOT -->
+        <div class="guide-step" style="border-color:#f1948a;">
+          <div class="guide-step-header" onclick="toggleStep('err')" style="background:#fdf0ef;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="guide-num" style="background:#e74c3c;">!</div>
+              <div>
+                <div class="guide-step-title">Se der erro — O que fazer?</div>
+                <div class="guide-step-sub">Não entre em pânico! Soluções para os erros mais comuns</div>
+              </div>
+            </div>
+            <div class="guide-chevron" id="chev-err">▼</div>
+          </div>
+          <div class="guide-step-body" id="gbody-err" style="display:none;">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div class="error-card">
+                <div class="error-title">❌ "Connection refused" ou "Conexão recusada"</div>
+                <div class="error-solution">🔧 Troque para <strong>TLS (porta 587)</strong> no formulário ao lado, e confirme que o Host está correto: <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px;">mail.seudominio.com</code></div>
+              </div>
+              <div class="error-card">
+                <div class="error-title">❌ "Invalid login" ou "Usuário/senha inválidos"</div>
+                <div class="error-solution">🔧 Volte ao cPanel e <strong>redefina a senha</strong> do email. Confirme que digitou o email <strong>completo</strong> (com @seusite.com), não só o usuário.</div>
+              </div>
+              <div class="error-card">
+                <div class="error-title">❌ "Timeout" ou demora para responder</div>
+                <div class="error-solution">🔧 Sua rede pode estar bloqueando a porta. Tente de outra rede (use o celular como hotspot) ou peça ao suporte da hospedagem para liberar as portas 465 e 587.</div>
+              </div>
+              <div class="error-card">
+                <div class="error-title">🚫 Emails chegando na caixa de spam</div>
+                <div class="error-solution">🔧 No cPanel, vá em <strong>Email → Autenticação de Email</strong> e ative <strong>DKIM</strong> e <strong>SPF</strong>.</div>
+              </div>
+              <div style="background:#e8f4fd;border-radius:8px;padding:12px 14px;border:1px solid #aed6f1;font-size:13px;line-height:1.6;">
+                💬 <strong>Ainda com problema?</strong> Fale isso para o suporte da hospedagem:<br>
+                <em>"Preciso usar SMTP autenticado na porta 465 (SSL) ou 587 (TLS) com o email [seu email]. Por favor confirme as configurações."</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /left column -->
+
+        <!-- RIGHT: SMTP FORM (always visible) -->
+        <div style="position:sticky;top:0;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;box-shadow:var(--shadow-lg);">
+
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:4px;">⚙️ Dados de configuração</div>
+            <div style="font-size:12.5px;color:var(--text-3);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">Preencha com os dados do seu cPanel</div>
+
+            <!-- SERVER -->
+            <div class="guide-field-group">
+              <div class="guide-field-label">🌐 Servidor SMTP</div>
+              <div class="guide-field-explain">Geralmente é <strong>mail.</strong> + seu domínio<br><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);">Ex: mail.meusite.com.br</span></div>
+              <input type="text" id="smtp-host" placeholder="mail.seudominio.com.br" style="font-family:'DM Mono',monospace;">
+            </div>
+
+            <!-- SECURITY -->
+            <div class="guide-field-group">
+              <div class="guide-field-label">🔒 Tipo de conexão</div>
+              <div class="guide-field-explain">Escolha <strong>SSL</strong> primeiro. Se não funcionar, tente TLS.</div>
+              <div style="display:flex;gap:8px;margin-bottom:8px;">
+                <label class="security-option selected" id="opt-ssl" onclick="selectSecurity('ssl')" style="flex:1;min-width:0;">
+                  <div style="font-size:18px;">🔐</div>
+                  <div><div style="font-weight:700;font-size:12px;">SSL</div><div style="font-size:10px;color:var(--text-3);">Porta 465</div></div>
+                </label>
+                <label class="security-option" id="opt-tls" onclick="selectSecurity('tls')" style="flex:1;min-width:0;">
+                  <div style="font-size:18px;">🔓</div>
+                  <div><div style="font-weight:700;font-size:12px;">TLS</div><div style="font-size:10px;color:var(--text-3);">Porta 587</div></div>
+                </label>
+                <label class="security-option" id="opt-none" onclick="selectSecurity('none')" style="flex:1;min-width:0;">
+                  <div style="font-size:18px;">⚠️</div>
+                  <div><div style="font-weight:700;font-size:12px;">Nenhum</div><div style="font-size:10px;color:var(--text-3);">Porta 25</div></div>
+                </label>
+              </div>
+              <input type="hidden" id="smtp-port" value="465">
+              <input type="hidden" id="smtp-secure" value="true">
+              <div id="port-display" style="font-family:'DM Mono',monospace;font-size:11.5px;color:var(--text-3);">Porta: <strong style="color:var(--success);">465</strong> (SSL)</div>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="guide-field-group">
+              <div class="guide-field-label">📧 Email (usuário)</div>
+              <div class="guide-field-explain">O email completo criado no cPanel<br><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);">Ex: marketing@meusite.com.br</span></div>
+              <input type="email" id="smtp-user" placeholder="marketing@seudominio.com.br">
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="guide-field-group">
+              <div class="guide-field-label">🔑 Senha do email</div>
+              <div class="guide-field-explain">A senha que você criou no cPanel para esse email<br><span style="font-size:11px;color:var(--danger);">⚠️ Não é a senha do cPanel, é a senha do email</span></div>
+              <div style="position:relative;">
+                <input type="password" id="smtp-pass" placeholder="••••••••" style="padding-right:42px;">
+                <button onclick="togglePassVis()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:17px;color:var(--text-3);" title="Ver/ocultar senha">👁</button>
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border);margin:16px 0 14px;"></div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-3);margin-bottom:14px;">Quem aparece nos emails enviados</div>
+
+            <!-- FROM NAME -->
+            <div class="guide-field-group">
+              <div class="guide-field-label">👤 Nome do remetente</div>
+              <div class="guide-field-explain">O nome que as pessoas vão ver ao receber o email<br><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);">Ex: Meu Negócio ou João Silva</span></div>
+              <input type="text" id="smtp-from-name" placeholder="Ex: Meu Negócio">
+            </div>
+
+            <!-- FROM EMAIL -->
+            <div class="guide-field-group" style="margin-bottom:0;">
+              <div class="guide-field-label">📮 Email do remetente</div>
+              <div class="guide-field-explain">Normalmente igual ao email acima</div>
+              <input type="email" id="smtp-from-email" placeholder="marketing@seudominio.com.br">
+            </div>
+
+            <!-- BUTTONS -->
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+              <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;padding:12px;font-size:14px;">
+                💾 Salvar configurações
+              </button>
+              <button class="btn btn-ghost" onclick="testSmtp()" style="width:100%;justify-content:center;padding:11px;">
+                🔌 Testar conexão ao servidor
+              </button>
+            </div>
+
+            <!-- TEST RESULT -->
+            <div id="test-result" style="display:none;margin-top:14px;"></div>
+
+            <!-- SEND TEST EMAIL -->
+            <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border);">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-3);margin-bottom:10px;">
+                📨 Enviar email de teste
+              </div>
+              <p style="font-size:12.5px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">
+                Envia um email real para confirmar que tudo funciona de ponta a ponta.
+              </p>
+              <div style="display:flex;gap:8px;">
+                <input type="email" id="test-email-to" placeholder="seuemail@gmail.com" style="flex:1;padding:9px 12px;">
+                <button class="btn btn-success" onclick="sendTestEmail()" style="flex-shrink:0;white-space:nowrap;">
+                  ▶ Enviar
+                </button>
+              </div>
+              <div id="send-test-result" style="display:none;margin-top:10px;"></div>
+            </div>
+
+          </div>
+        </div><!-- /right column -->
+
+        </div><!-- /grid -->
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- TOAST CONTAINER -->
+<div class="toasts" id="toasts"></div>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Contact modal -->
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Adicionar contato</div>
+      <button class="modal-close" onclick="closeModal('modal-contact')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Email *</label><input type="email" id="c-email" placeholder="contato@email.com"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Nome</label><input type="text" id="c-name" placeholder="Nome completo"></div>
+        <div class="form-group"><label>Telefone</label><input type="text" id="c-phone" placeholder="(11) 99999-9999"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-contact')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveContact()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- List modal -->
+<div class="modal-overlay" id="modal-list">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nova lista de contatos</div>
+      <button class="modal-close" onclick="closeModal('modal-list')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Nome *</label><input type="text" id="l-name" placeholder="Ex: Leads de Maio"></div>
+      <div class="form-group"><label>Descrição</label><textarea id="l-desc" placeholder="Descrição opcional…" style="min-height:80px;"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-list')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveList()">Criar lista</button>
+    </div>
+  </div>
+</div>
+
+<!-- Campaign modal -->
+<div class="modal-overlay" id="modal-campaign">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title" id="campaign-modal-title">Nova campanha</div>
+      <button class="modal-close" onclick="closeModal('modal-campaign')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome *</label><input type="text" id="camp-name" placeholder="Nome interno da campanha"></div>
+        <div class="form-group"><label>Assunto *</label><input type="text" id="camp-subject" placeholder="Assunto do email"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Lista de destinatários *</label>
+          <select id="camp-list"></select>
+        </div>
+        <div class="form-group">
+          <label>Agendar para (opcional)</label>
+          <input type="datetime-local" id="camp-scheduled">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Corpo HTML *</label>
+        <textarea id="camp-html" placeholder="&lt;h1&gt;Olá {{name}}!&lt;/h1&gt;&lt;p&gt;...&lt;/p&gt;" style="min-height:160px;font-family:'DM Mono',monospace;font-size:12px;"></textarea>
+        <div class="hint">Variáveis disponíveis: <code>{{name}}</code> <code>{{email}}</code> <code>{{utm_source}}</code> <code>{{utm_campaign}}</code> e campos customizados do formulário.</div>
+      </div>
+      <div class="form-group">
+        <label>Corpo texto simples (opcional)</label>
+        <textarea id="camp-text" placeholder="Versão em texto puro…" style="min-height:80px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-campaign')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="saveCampaign('draft')">Salvar rascunho</button>
+      <button class="btn btn-primary" onclick="saveCampaign('send')">Salvar e enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Automation modal -->
+<div class="modal-overlay" id="modal-automation">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title" id="auto-modal-title">Nova automação</div>
+      <button class="modal-close" onclick="closeModal('modal-automation')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome *</label><input type="text" id="auto-name" placeholder="Ex: Boas-vindas"></div>
+        <div class="form-group">
+          <label>Gatilho *</label>
+          <select id="auto-trigger">
+            <option value="webhook_form">Formulário (webhook)</option>
+            <option value="manual">Manual</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Filtrar por lista (opcional)</label>
+        <select id="auto-list">
+          <option value="">Qualquer lista</option>
+        </select>
+      </div>
+
+      <div style="margin-top:4px;margin-bottom:12px;">
+        <label style="margin-bottom:10px;">Passos da automação</label>
+        <div class="steps-builder" id="steps-builder"></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:10px;" onclick="addStep()">+ Adicionar passo</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-automation')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveAutomation()">Salvar automação</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template modal -->
+<div class="modal-overlay" id="modal-template">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title" id="tpl-modal-title">Novo template</div>
+      <button class="modal-close" onclick="closeModal('modal-template')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Nome *</label><input type="text" id="tpl-name" placeholder="Nome do template"></div>
+        <div class="form-group"><label>Assunto *</label><input type="text" id="tpl-subject" placeholder="Assunto do email"></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('editor')">Editor HTML</button>
+        <button class="tab-btn" onclick="switchTab('preview')">Pré-visualização</button>
+        <button class="tab-btn" onclick="switchTab('text')">Texto simples</button>
+      </div>
+      <div class="tab-pane active" id="tab-editor">
+        <textarea id="tpl-html" placeholder="&lt;h1&gt;Olá {{name}}!&lt;/h1&gt;" style="min-height:240px;font-family:'DM Mono',monospace;font-size:12px;" oninput="updatePreview()"></textarea>
+        <div class="hint">Variáveis: <code>{{name}}</code> <code>{{email}}</code> <code>{{phone}}</code> <code>{{utm_source}}</code> <code>{{utm_medium}}</code> <code>{{utm_campaign}}</code> + campos extras do formulário.</div>
+      </div>
+      <div class="tab-pane" id="tab-preview">
+        <iframe id="tpl-preview-frame" class="preview-frame"></iframe>
+      </div>
+      <div class="tab-pane" id="tab-text">
+        <textarea id="tpl-text" placeholder="Versão em texto puro…" style="min-height:200px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-template')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">Salvar template</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════
+// STATE
+// ═══════════════════════════════
+const state = {
+  contacts: [], contactsTotal: 0, contactsPage: 1,
+  contactSearch: '', contactStatus: '', contactListId: '',
+  campaigns: [],
+  automations: [],
+  templates: [],
+  lists: [],
+  editId: null,
+  steps: [],
+};
+
+// ═══════════════════════════════
+// UTILS
+// ═══════════════════════════════
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch('/api' + path, opts);
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({ error: r.statusText }));
+    throw new Error(e.error || r.statusText);
+  }
+  return r.json();
+}
+
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function fmt(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function fmtDate(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function badge(status) {
+  const map = {
+    draft: ['gray', 'Rascunho'],
+    scheduled: ['blue', 'Agendado'],
+    sending: ['yellow', 'Enviando'],
+    sent: ['green', 'Enviado'],
+    active: ['green', 'Ativo'],
+    unsubscribed: ['gray', 'Descadastrado'],
+  };
+  const [color, label] = map[status] || ['gray', status];
+  return `<span class="badge badge-${color}">${label}</span>`;
+}
+
+// ═══════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════
+const pageTitles = {
+  dashboard: 'Dashboard',
+  contacts: 'Contatos',
+  campaigns: 'Campanhas',
+  automations: 'Automações',
+  templates: 'Templates',
+  webhook: 'Webhook',
+  settings: 'Configurações',
+};
+
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => navigate(el.dataset.page));
+});
+
+function navigate(page) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === page));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === `page-${page}`));
+  document.getElementById('topbar-title').textContent = pageTitles[page] || page;
+  if (page === 'dashboard') loadDashboard();
+  if (page === 'contacts') loadContacts();
+  if (page === 'campaigns') loadCampaigns();
+  if (page === 'automations') loadAutomations();
+  if (page === 'templates') loadTemplates();
+  if (page === 'webhook') loadWebhook();
+}
+
+// ═══════════════════════════════
+// MODALS
+// ═══════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  state.editId = null;
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) closeModal(el.id); });
+});
+
+// ═══════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════
+async function loadDashboard() {
+  try {
+    const s = await api('GET', '/stats');
+    document.getElementById('stat-contacts').textContent = s.contacts;
+    document.getElementById('stat-campaigns').textContent = s.campaigns;
+    document.getElementById('stat-automations').textContent = s.automations;
+    document.getElementById('stat-emails').textContent = s.emails_sent;
+
+    const tbody = document.getElementById('recent-contacts-body');
+    if (!s.recent_contacts?.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Nenhum contato ainda</div><div class="empty-sub">Aguardando dados do webhook</div></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = s.recent_contacts.map(c => `
+      <tr>
+        <td>${c.name || '<span style="color:var(--text-3)">—</span>'}</td>
+        <td class="td-mono">${c.email}</td>
+        <td class="td-mono">${c.utm_source || '—'}</td>
+        <td class="td-mono">${c.utm_campaign || '—'}</td>
+        <td>${fmtDate(c.created_at)}</td>
+      </tr>`).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ═══════════════════════════════
+// CONTACTS
+// ═══════════════════════════════
+async function loadContacts(page = 1) {
+  state.contactsPage = page;
+  try {
+    const qs = new URLSearchParams({
+      page, limit: 20,
+      search: state.contactSearch,
+      status: state.contactStatus,
+      list_id: state.contactListId,
+    });
+    const data = await api('GET', `/contacts?${qs}`);
+    state.contacts = data.contacts;
+    state.contactsTotal = data.total;
+
+    const tbody = document.getElementById('contacts-body');
+    if (!data.contacts.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">Nenhum contato encontrado</div></div></td></tr>`;
+    } else {
+      tbody.innerHTML = data.contacts.map(c => `
+        <tr>
+          <td>${c.name || '<span style="color:var(--text-3)">—</span>'}</td>
+          <td class="td-mono">${c.email}</td>
+          <td class="td-mono">${c.utm_source || '—'}</td>
+          <td class="td-mono">${c.utm_campaign || '—'}</td>
+          <td>${badge(c.status)}</td>
+          <td class="td-mono">${fmtDate(c.created_at)}</td>
+          <td>
+            <div class="td-actions">
+              <button class="btn btn-danger btn-sm" onclick="deleteContact(${c.id})">Remover</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    const info = document.getElementById('contacts-pagination-info');
+    const btnWrap = document.getElementById('contacts-pagination');
+    const pages = data.pages;
+    info.textContent = `${data.total} contato${data.total !== 1 ? 's' : ''}`;
+    btnWrap.innerHTML = '';
+    for (let i = 1; i <= pages; i++) {
+      const b = document.createElement('button');
+      b.className = `page-btn${i === page ? ' active' : ''}`;
+      b.textContent = i;
+      b.onclick = () => loadContacts(i);
+      btnWrap.appendChild(b);
+    }
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function loadLists() {
+  try {
+    state.lists = await api('GET', '/contacts/lists/all');
+    const selFilter = document.getElementById('contact-list-filter');
+    const selCamp = document.getElementById('camp-list');
+    const selAuto = document.getElementById('auto-list');
+
+    const listOpts = state.lists.map(l => `<option value="${l.id}">${l.name} (${l.contact_count})</option>`).join('');
+    selFilter.innerHTML = `<option value="">Todas as listas</option>${listOpts}`;
+    selCamp.innerHTML = `<option value="">Selecione uma lista…</option>${listOpts}`;
+    selAuto.innerHTML = `<option value="">Qualquer lista</option>${listOpts}`;
+  } catch (_) {}
+}
+
+document.getElementById('contact-search').addEventListener('input', e => {
+  state.contactSearch = e.target.value;
+  clearTimeout(state._searchTimer);
+  state._searchTimer = setTimeout(() => loadContacts(), 350);
+});
+
+document.getElementById('contact-status-filter').addEventListener('change', e => {
+  state.contactStatus = e.target.value;
+  loadContacts();
+});
+
+document.getElementById('contact-list-filter').addEventListener('change', e => {
+  state.contactListId = e.target.value;
+  loadContacts();
+});
+
+async function saveContact() {
+  const email = document.getElementById('c-email').value.trim();
+  if (!email) return toast('Email é obrigatório', 'error');
+  try {
+    await api('POST', '/contacts', {
+      email,
+      name: document.getElementById('c-name').value,
+      phone: document.getElementById('c-phone').value,
+    });
+    ['c-email', 'c-name', 'c-phone'].forEach(id => document.getElementById(id).value = '');
+    closeModal('modal-contact');
+    toast('Contato adicionado!');
+    loadContacts();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function deleteContact(id) {
+  if (!confirm('Remover este contato?')) return;
+  try {
+    await api('DELETE', `/contacts/${id}`);
+    toast('Contato removido');
+    loadContacts(state.contactsPage);
+    loadDashboard();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function saveList() {
+  const name = document.getElementById('l-name').value.trim();
+  if (!name) return toast('Nome é obrigatório', 'error');
+  try {
+    await api('POST', '/contacts/lists', { name, description: document.getElementById('l-desc').value });
+    ['l-name', 'l-desc'].forEach(id => document.getElementById(id).value = '');
+    closeModal('modal-list');
+    toast('Lista criada!');
+    loadLists();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ═══════════════════════════════
+// CAMPAIGNS
+// ═══════════════════════════════
+async function loadCampaigns() {
+  await loadLists();
+  try {
+    state.campaigns = await api('GET', '/campaigns');
+    const tbody = document.getElementById('campaigns-body');
+    if (!state.campaigns.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📣</div><div class="empty-text">Nenhuma campanha ainda</div><div class="empty-sub">Crie sua primeira campanha de email</div></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = state.campaigns.map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.list_name || '<span style="color:var(--text-3)">—</span>'}</td>
+        <td>${badge(c.status)}</td>
+        <td class="td-mono">${c.total_sent}</td>
+        <td class="td-mono">${fmt(c.scheduled_at)}</td>
+        <td class="td-mono">${fmtDate(c.created_at)}</td>
+        <td>
+          <div class="td-actions">
+            ${c.status !== 'sent' ? `<button class="btn btn-ghost btn-sm" onclick="openCampaignModal(${c.id})">Editar</button>` : ''}
+            ${c.status !== 'sent' && c.status !== 'sending' ? `<button class="btn btn-success btn-sm" onclick="sendCampaign(${c.id})">Enviar</button>` : ''}
+            ${c.status !== 'sent' ? `<button class="btn btn-danger btn-sm" onclick="deleteCampaign(${c.id})">✕</button>` : ''}
+          </div>
+        </td>
+      </tr>`).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function openCampaignModal(id) {
+  state.editId = id || null;
+  document.getElementById('campaign-modal-title').textContent = id ? 'Editar campanha' : 'Nova campanha';
+  if (!id) {
+    ['camp-name','camp-subject','camp-html','camp-text'].forEach(x => document.getElementById(x).value = '');
+    document.getElementById('camp-scheduled').value = '';
+    document.getElementById('camp-list').value = '';
+  } else {
+    const c = state.campaigns.find(x => x.id === id);
+    if (c) {
+      document.getElementById('camp-name').value = c.name;
+      document.getElementById('camp-subject').value = c.subject;
+      document.getElementById('camp-html').value = c.html_body;
+      document.getElementById('camp-text').value = c.text_body || '';
+      document.getElementById('camp-list').value = c.list_id || '';
+      document.getElementById('camp-scheduled').value = c.scheduled_at ? c.scheduled_at.slice(0,16) : '';
+    }
+  }
+  openModal('modal-campaign');
+}
+
+async function saveCampaign(action) {
+  const name = document.getElementById('camp-name').value.trim();
+  const subject = document.getElementById('camp-subject').value.trim();
+  const html_body = document.getElementById('camp-html').value.trim();
+  const list_id = document.getElementById('camp-list').value;
+  if (!name || !subject || !html_body) return toast('Nome, assunto e corpo HTML são obrigatórios', 'error');
+
+  const body = {
+    name, subject, html_body,
+    text_body: document.getElementById('camp-text').value,
+    list_id: list_id || null,
+    scheduled_at: document.getElementById('camp-scheduled').value || null,
+  };
+
+  try {
+    let campId = state.editId;
+    if (campId) {
+      await api('PUT', `/campaigns/${campId}`, body);
+    } else {
+      const r = await api('POST', '/campaigns', body);
+      campId = r.id;
+    }
+
+    closeModal('modal-campaign');
+
+    if (action === 'send') {
+      if (!list_id) return toast('Selecione uma lista para enviar', 'error');
+      toast('Enviando campanha…');
+      await api('POST', `/campaigns/${campId}/send`, {});
+      toast('Campanha enviada!');
+    } else {
+      toast('Campanha salva!');
+    }
+    loadCampaigns();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function sendCampaign(id) {
+  if (!confirm('Enviar esta campanha agora para todos os contatos da lista?')) return;
+  try {
+    toast('Enviando…');
+    const r = await api('POST', `/campaigns/${id}/send`, {});
+    toast(`Campanha enviada! ${r.sent}/${r.total} emails.`);
+    loadCampaigns();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function deleteCampaign(id) {
+  if (!confirm('Remover esta campanha?')) return;
+  try {
+    await api('DELETE', `/campaigns/${id}`);
+    toast('Campanha removida');
+    loadCampaigns();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ═══════════════════════════════
+// AUTOMATIONS
+// ═══════════════════════════════
+async function loadAutomations() {
+  await loadTemplatesForSelect();
+  try {
+    state.automations = await api('GET', '/automations');
+    const grid = document.getElementById('automations-grid');
+    if (!state.automations.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:48px;"><div class="empty-icon">⚡</div><div class="empty-text">Nenhuma automação criada</div><div class="empty-sub">Crie uma automação para enviar emails automaticamente quando um formulário for preenchido.</div></div>`;
+      return;
+    }
+    grid.innerHTML = state.automations.map(a => `
+      <div class="auto-card">
+        <div class="auto-card-header">
+          <div>
+            <div class="auto-name">${a.name}</div>
+            <div class="auto-trigger">Gatilho: ${a.trigger_type === 'webhook_form' ? 'Formulário (webhook)' : 'Manual'}</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" ${a.status === 'active' ? 'checked' : ''} onchange="toggleAuto(${a.id}, this.checked)">
+            <div class="toggle-track"></div>
+          </label>
+        </div>
+        <div class="steps-timeline">
+          ${(a.steps || []).length === 0 ? '<div style="font-size:12px;color:var(--text-3);">Nenhum passo configurado</div>' :
+            a.steps.map((s, i) => `
+              <div class="step-item">
+                <div class="step-dot">${i+1}</div>
+                <div class="step-info">
+                  <div class="step-title">${s.action_type === 'send_email' ? '✉ Enviar email' : s.action_type}</div>
+                  <div class="step-delay">${s.delay_minutes > 0 ? `Após ${s.delay_minutes}min · ` : 'Imediato · '}${s.template_name || '—'}</div>
+                </div>
+              </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+          <button class="btn btn-ghost btn-sm" onclick="openAutoModal(${a.id})">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAuto(${a.id})">Remover</button>
+        </div>
+      </div>`).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function toggleAuto(id, active) {
+  try {
+    await api('PUT', `/automations/${id}`, { status: active ? 'active' : 'inactive' });
+    toast(active ? 'Automação ativada' : 'Automação pausada');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function openAutoModal(id) {
+  state.editId = id || null;
+  state.steps = [];
+  document.getElementById('auto-modal-title').textContent = id ? 'Editar automação' : 'Nova automação';
+  document.getElementById('steps-builder').innerHTML = '';
+
+  if (!id) {
+    document.getElementById('auto-name').value = '';
+    document.getElementById('auto-trigger').value = 'webhook_form';
+    document.getElementById('auto-list').value = '';
+  } else {
+    const a = state.automations.find(x => x.id === id);
+    if (a) {
+      document.getElementById('auto-name').value = a.name;
+      document.getElementById('auto-trigger').value = a.trigger_type;
+      document.getElementById('auto-list').value = a.trigger_config?.list_id || '';
+      state.steps = a.steps.map(s => ({ ...s }));
+      state.steps.forEach((_, i) => renderStep(i));
+    }
+  }
+  openModal('modal-automation');
+}
+
+function addStep() {
+  const idx = state.steps.length;
+  state.steps.push({ action_type: 'send_email', delay_minutes: 0, template_id: '' });
+  renderStep(idx);
+}
+
+function renderStep(idx) {
+  const tplOpts = (state.templates || []).map(t => `<option value="${t.id}" ${state.steps[idx]?.template_id == t.id ? 'selected' : ''}>${t.name}</option>`).join('');
+  const s = state.steps[idx];
+  const builder = document.getElementById('steps-builder');
+  let el = document.getElementById(`step-${idx}`);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = `step-${idx}`;
+    el.className = 'step-builder-item';
+    builder.appendChild(el);
+  }
+  el.innerHTML = `
+    <div class="form-group" style="min-width:120px;">
+      <label>Atraso (min)</label>
+      <input type="number" min="0" value="${s.delay_minutes}" onchange="state.steps[${idx}].delay_minutes=parseInt(this.value)||0" style="width:100%;">
+    </div>
+    <div class="form-group" style="flex:2;">
+      <label>Template de email</label>
+      <select onchange="state.steps[${idx}].template_id=this.value"><option value="">Selecione…</option>${tplOpts}</select>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="removeStep(${idx})" style="margin-bottom:0;flex-shrink:0;">✕</button>`;
+}
+
+function removeStep(idx) {
+  state.steps.splice(idx, 1);
+  document.getElementById('steps-builder').innerHTML = '';
+  state.steps.forEach((_, i) => renderStep(i));
+}
+
+async function saveAutomation() {
+  const name = document.getElementById('auto-name').value.trim();
+  const trigger_type = document.getElementById('auto-trigger').value;
+  const list_id = document.getElementById('auto-list').value;
+  if (!name) return toast('Nome é obrigatório', 'error');
+
+  const body = {
+    name, trigger_type,
+    trigger_config: list_id ? { list_id: parseInt(list_id) } : {},
+    steps: state.steps.map((s, i) => ({
+      step_order: i + 1,
+      action_type: s.action_type,
+      delay_minutes: s.delay_minutes,
+      template_id: s.template_id || null,
+    })),
+  };
+
+  try {
+    if (state.editId) {
+      await api('PUT', `/automations/${state.editId}`, body);
+    } else {
+      await api('POST', '/automations', body);
+    }
+    closeModal('modal-automation');
+    toast('Automação salva!');
+    loadAutomations();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function deleteAuto(id) {
+  if (!confirm('Remover esta automação?')) return;
+  try {
+    await api('DELETE', `/automations/${id}`);
+    toast('Automação removida');
+    loadAutomations();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ═══════════════════════════════
+// TEMPLATES
+// ═══════════════════════════════
+async function loadTemplatesForSelect() {
+  try {
+    state.templates = await api('GET', '/templates');
+  } catch (_) {}
+}
+
+async function loadTemplates() {
+  await loadTemplatesForSelect();
+  const grid = document.getElementById('templates-grid');
+  if (!state.templates.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:48px;"><div class="empty-icon">📄</div><div class="empty-text">Nenhum template criado</div><div class="empty-sub">Crie templates reutilizáveis para emails.</div></div>`;
+    return;
+  }
+  grid.innerHTML = state.templates.map(t => `
+    <div class="tpl-card">
+      <div class="tpl-preview">📧</div>
+      <div class="tpl-body">
+        <div class="tpl-name">${t.name}</div>
+        <div class="tpl-subject">${t.subject}</div>
+        <div class="tpl-actions">
+          <button class="btn btn-ghost btn-sm" onclick="openTemplateModal(${t.id})">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTemplate(${t.id})">Remover</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openTemplateModal(id) {
+  state.editId = id || null;
+  document.getElementById('tpl-modal-title').textContent = id ? 'Editar template' : 'Novo template';
+  switchTab('editor');
+  if (!id) {
+    ['tpl-name','tpl-subject','tpl-html','tpl-text'].forEach(x => document.getElementById(x).value = '');
+  } else {
+    const t = state.templates.find(x => x.id === id);
+    if (t) {
+      document.getElementById('tpl-name').value = t.name;
+      document.getElementById('tpl-subject').value = t.subject;
+      document.getElementById('tpl-html').value = t.html_body;
+      document.getElementById('tpl-text').value = t.text_body || '';
+    }
+  }
+  openModal('modal-template');
+}
+
+async function saveTemplate() {
+  const name = document.getElementById('tpl-name').value.trim();
+  const subject = document.getElementById('tpl-subject').value.trim();
+  const html_body = document.getElementById('tpl-html').value.trim();
+  if (!name || !subject || !html_body) return toast('Nome, assunto e HTML são obrigatórios', 'error');
+  try {
+    const body = { name, subject, html_body, text_body: document.getElementById('tpl-text').value };
+    if (state.editId) await api('PUT', `/templates/${state.editId}`, body);
+    else await api('POST', '/templates', body);
+    closeModal('modal-template');
+    toast('Template salvo!');
+    loadTemplates();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function deleteTemplate(id) {
+  if (!confirm('Remover este template?')) return;
+  try {
+    await api('DELETE', `/templates/${id}`);
+    toast('Template removido');
+    loadTemplates();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['editor','preview','text'];
+    b.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  if (tab === 'preview') updatePreview();
+}
+
+function updatePreview() {
+  const frame = document.getElementById('tpl-preview-frame');
+  const html = document.getElementById('tpl-html').value;
+  frame.srcdoc = html || '<p style="color:#999;padding:20px;font-family:sans-serif;">Pré-visualização do template</p>';
+}
+
+// ═══════════════════════════════
+// SETTINGS
+// ═══════════════════════════════
+const SETTINGS_KEY = 'emailflow_smtp';
+
+function loadSettings() {
+  const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+  if (s.host) document.getElementById('smtp-host').value = s.host;
+  if (s.port) document.getElementById('smtp-port').value = s.port;
+  if (s.secure) document.getElementById('smtp-secure').checked = s.secure;
+  if (s.user) document.getElementById('smtp-user').value = s.user;
+  if (s.fromName) document.getElementById('smtp-from-name').value = s.fromName;
+  if (s.fromEmail) document.getElementById('smtp-from-email').value = s.fromEmail;
+}
+
+async function saveSettings() {
+  const settings = {
+    host: document.getElementById('smtp-host').value,
+    port: document.getElementById('smtp-port').value,
+    secure: document.getElementById('smtp-secure').checked,
+    user: document.getElementById('smtp-user').value,
+    fromName: document.getElementById('smtp-from-name').value,
+    fromEmail: document.getElementById('smtp-from-email').value,
+  };
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  try {
+    await api('POST', '/settings/smtp', {
+      SMTP_HOST: settings.host,
+      SMTP_PORT: settings.port,
+      SMTP_SECURE: settings.secure ? 'true' : 'false',
+      SMTP_USER: settings.user,
+      SMTP_PASS: document.getElementById('smtp-pass').value,
+      SMTP_FROM_NAME: settings.fromName,
+      SMTP_FROM_EMAIL: settings.fromEmail,
+    });
+    toast('Configurações salvas!');
+  } catch (_) {
+    toast('Configurações salvas localmente. Atualize o arquivo .env para persistir no servidor.', 'success');
+  }
+}
+
+async function sendTestEmail() {
+  const to = document.getElementById('test-email-to').value.trim();
+  const resultDiv = document.getElementById('send-test-result');
+  if (!to) { toast('Digite um email de destino', 'error'); return; }
+
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `<div style="background:var(--info-bg);border:1px solid #aed6f1;border-radius:8px;padding:11px 14px;font-size:13px;display:flex;gap:8px;align-items:center;"><span>⏳</span> Enviando email para <strong>${to}</strong>…</div>`;
+
+  try {
+    await api('POST', '/settings/smtp/send-test', { to });
+    resultDiv.innerHTML = `
+      <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:13px 14px;font-size:13px;">
+        <div style="font-weight:700;color:#27ae60;margin-bottom:4px;">✅ Email enviado com sucesso!</div>
+        <div style="color:var(--text-2);line-height:1.6;">Verifique a caixa de entrada de <strong>${to}</strong>.<br>
+        <span style="font-size:12px;">Não encontrou? Verifique a pasta de <strong>Spam/Lixo eletrônico</strong>.</span></div>
+      </div>`;
+    toast('Email de teste enviado!');
+  } catch (e) {
+    resultDiv.innerHTML = `
+      <div style="background:#fdf0ef;border:1px solid #f1948a;border-radius:8px;padding:13px 14px;font-size:13px;">
+        <div style="font-weight:700;color:#c0392b;margin-bottom:6px;">❌ Falha ao enviar</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11.5px;background:var(--surface-2);padding:8px 10px;border-radius:6px;color:var(--text-2);">${e.message}</div>
+        <div style="margin-top:8px;font-size:12.5px;color:var(--text-2);">💡 Verifique se as configurações foram salvas e se o servidor SMTP está correto.</div>
+      </div>`;
+    toast(e.message, 'error');
+  }
+}
+
+// ═══════════════════════════════
+// WEBHOOK URL
+// ═══════════════════════════════
+document.getElementById('webhook-display').textContent = `${location.origin}/webhook`;
+
+// ═══════════════════════════════
+// WEBHOOK PAGE
+// ═══════════════════════════════
+async function loadWebhook() {
+  const url = `${location.origin}/webhook`;
+  document.getElementById('wh-url-display').textContent = url;
+  document.getElementById('ex-url').textContent = url;
+  document.getElementById('ex-curl').textContent =
+    `curl -X POST ${url} \\\n  -H "Content-Type: application/json" \\\n  -d '{"email":"lead@email.com","name":"Maria Silva","utm_source":"google"}'`;
+
+  await loadLists();
+  const sel = document.getElementById('wh-default-list');
+  sel.innerHTML = '<option value="">Nenhuma (não adicionar a lista)</option>' +
+    state.lists.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+
+  try {
+    const cfg = await api('GET', '/webhook/config');
+    const fm = cfg.field_map || {};
+    ['email','name','phone','utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(f => {
+      const el = document.getElementById(`fm-${f}`);
+      if (el && fm[f]) el.value = fm[f];
+    });
+    if (cfg.default_list_id) sel.value = cfg.default_list_id;
+    if (cfg.secret) document.getElementById('wh-secret').value = cfg.secret;
+  } catch (_) {}
+
+  updateTestPayload();
+  loadWebhookLogs();
+
+  ['test-email','test-name','test-phone','test-utm_source','test-utm_campaign'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateTestPayload);
+  });
+}
+
+function updateTestPayload() {
+  const fields = ['email','name','phone','utm_source','utm_campaign'];
+  const payload = {};
+  fields.forEach(f => {
+    const val = document.getElementById(`test-${f}`)?.value.trim();
+    if (val) payload[f] = val;
+  });
+  document.getElementById('test-payload-preview').textContent = JSON.stringify(payload, null, 2);
+}
+
+async function copyWebhookUrl() {
+  const url = document.getElementById('wh-url-display').textContent;
+  await navigator.clipboard.writeText(url);
+  const btn = document.getElementById('wh-copy-btn');
+  btn.textContent = '✅ Copiado!';
+  setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
+}
+
+async function saveWebhookConfig() {
+  const field_map = {};
+  ['email','name','phone','utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(f => {
+    field_map[f] = document.getElementById(`fm-${f}`).value.trim() || f;
+  });
+  const body = {
+    field_map,
+    default_list_id: document.getElementById('wh-default-list').value || null,
+    secret: document.getElementById('wh-secret').value.trim(),
+  };
+  try {
+    await api('POST', '/webhook/config', body);
+    toast('Configuração do webhook salva!');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function sendTestWebhook() {
+  const payload = {};
+  ['email','name','phone','utm_source','utm_campaign'].forEach(f => {
+    const v = document.getElementById(`test-${f}`)?.value.trim();
+    if (v) payload[f] = v;
+  });
+  const resultDiv = document.getElementById('test-wh-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `<div style="background:var(--info-bg);border:1px solid #aed6f1;border-radius:8px;padding:12px 14px;font-size:13px;display:flex;gap:8px;align-items:center;"><span>⏳</span> Enviando…</div>`;
+  try {
+    const r = await fetch('/webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json();
+    if (data.success) {
+      resultDiv.innerHTML = `<div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:12px 14px;font-size:13px;">
+        <div style="font-weight:700;color:#27ae60;margin-bottom:4px;">✅ Webhook recebido com sucesso!</div>
+        <div style="color:var(--text-2);font-family:'DM Mono',monospace;font-size:12px;">contact_id: ${data.contact_id} · ${data.is_new ? 'Novo contato criado' : 'Contato atualizado'}</div>
+      </div>`;
+      toast('Teste enviado! Verifique os logs abaixo.');
+      setTimeout(loadWebhookLogs, 800);
+    } else {
+      resultDiv.innerHTML = `<div style="background:#fdf0ef;border:1px solid #f1948a;border-radius:8px;padding:12px 14px;font-size:13px;color:#c0392b;">❌ ${data.error}</div>`;
+    }
+  } catch (e) {
+    resultDiv.innerHTML = `<div style="background:#fdf0ef;border:1px solid #f1948a;border-radius:8px;padding:12px 14px;font-size:13px;color:#c0392b;">❌ Erro: ${e.message}</div>`;
+  }
+}
+
+async function loadWebhookLogs() {
+  try {
+    const logs = await api('GET', '/webhook/logs');
+    const tbody = document.getElementById('wh-logs-body');
+    if (!logs.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Nenhum webhook recebido ainda</div><div class="empty-sub">Quando alguém preencher o formulário, aparece aqui</div></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = logs.map(l => {
+      let payloadObj = {};
+      try { payloadObj = JSON.parse(l.payload || '{}'); } catch (_) {}
+      const payloadStr = Object.entries(payloadObj).map(([k,v]) => `${k}: ${v}`).join(' · ').slice(0, 80);
+      return `<tr>
+        <td class="td-mono">${fmt(l.processed_at)}</td>
+        <td>${l.contact_name || '<span style="color:var(--text-3)">—</span>'}</td>
+        <td class="td-mono">${l.contact_email || '—'}</td>
+        <td class="td-mono">${l.source || '—'}</td>
+        <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${payloadStr}" class="td-mono">${payloadStr || '—'}</td>
+      </tr>`;
+    }).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ═══════════════════════════════
+// GUIDE (SETTINGS PAGE)
+// ═══════════════════════════════
+function toggleStep(n) {
+  const body = document.getElementById(`gbody-${n}`);
+  const chev = document.getElementById(`chev-${n}`);
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (chev) chev.classList.toggle('open', !isOpen);
+}
+
+// Open step 1 by default when navigating to settings
+const origNavigate = navigate;
+document.querySelectorAll('.nav-item').forEach(el => {
+  if (el.dataset.page === 'settings') {
+    el.addEventListener('click', () => {
+      setTimeout(() => {
+        const b1 = document.getElementById('gbody-1');
+        if (b1 && b1.style.display === 'none') toggleStep(1);
+      }, 50);
+    });
+  }
+});
+
+function selectSecurity(type) {
+  const portInput = document.getElementById('smtp-port');
+  const secureInput = document.getElementById('smtp-secure');
+  const display = document.getElementById('port-display');
+  document.querySelectorAll('.security-option').forEach(el => el.classList.remove('selected'));
+
+  if (type === 'ssl') {
+    document.getElementById('opt-ssl').classList.add('selected');
+    portInput.value = '465';
+    secureInput.value = 'true';
+    display.innerHTML = 'Porta selecionada: <strong style="color:var(--success);">465</strong> (SSL)';
+  } else if (type === 'tls') {
+    document.getElementById('opt-tls').classList.add('selected');
+    portInput.value = '587';
+    secureInput.value = 'false';
+    display.innerHTML = 'Porta selecionada: <strong style="color:var(--info);">587</strong> (TLS/STARTTLS)';
+  } else {
+    document.getElementById('opt-none').classList.add('selected');
+    portInput.value = '25';
+    secureInput.value = 'false';
+    display.innerHTML = 'Porta selecionada: <strong style="color:var(--warning);">25</strong> (Sem segurança — não recomendado)';
+  }
+}
+
+function togglePassVis() {
+  const inp = document.getElementById('smtp-pass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// Override saveSettings to read from new inputs
+function saveSettings() {
+  const settings = {
+    host: document.getElementById('smtp-host').value.trim(),
+    port: document.getElementById('smtp-port').value,
+    secure: document.getElementById('smtp-secure').value === 'true',
+    user: document.getElementById('smtp-user').value.trim(),
+    fromName: document.getElementById('smtp-from-name').value.trim(),
+    fromEmail: document.getElementById('smtp-from-email').value.trim(),
+  };
+
+  if (!settings.host || !settings.user) {
+    toast('Preencha pelo menos o servidor SMTP e o email', 'error');
+    return;
+  }
+
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  api('POST', '/settings/smtp', {
+    SMTP_HOST: settings.host,
+    SMTP_PORT: settings.port,
+    SMTP_SECURE: settings.secure ? 'true' : 'false',
+    SMTP_USER: settings.user,
+    SMTP_PASS: document.getElementById('smtp-pass').value,
+    SMTP_FROM_NAME: settings.fromName,
+    SMTP_FROM_EMAIL: settings.fromEmail,
+  }).then(() => {
+    toast('Configurações salvas com sucesso!');
+  }).catch(() => {
+    toast('Configurações salvas! Reinicie o servidor para aplicar.', 'success');
+  });
+}
+
+async function testSmtp() {
+  const resultDiv = document.getElementById('test-result');
+  if (resultDiv) {
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `<div style="background:var(--info-bg);border:1px solid #aed6f1;border-radius:8px;padding:14px;display:flex;align-items:center;gap:10px;font-size:13.5px;"><span style="font-size:20px;">⏳</span> Testando conexão com o servidor de email…</div>`;
+  }
+  try {
+    await api('POST', '/settings/smtp/test', {});
+    if (resultDiv) {
+      resultDiv.innerHTML = `<div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:14px;display:flex;align-items:center;gap:10px;font-size:13.5px;"><span style="font-size:20px;">✅</span><div><strong style="color:#27ae60;">Conexão bem-sucedida!</strong><br><span style="color:var(--text-2);">Seu email está configurado corretamente e pronto para enviar mensagens.</span></div></div>`;
+    }
+    toast('Conexão SMTP OK!');
+  } catch (e) {
+    if (resultDiv) {
+      resultDiv.innerHTML = `<div style="background:#fdf0ef;border:1px solid #f1948a;border-radius:8px;padding:14px;font-size:13.5px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><span style="font-size:20px;">❌</span><strong style="color:#e74c3c;">Erro na conexão</strong></div><div style="color:var(--text-2);font-family:'DM Mono',monospace;font-size:12px;background:var(--surface-2);padding:8px;border-radius:6px;">${e.message}</div><div style="margin-top:10px;font-size:13px;color:var(--text-2);">👆 Veja a seção "Se der erro" acima para resolver este problema.</div></div>`;
+    }
+    toast(e.message, 'error');
+  }
+}
+
+// Override loadSettings for new form structure
+function loadSettings() {
+  const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+  if (s.host) document.getElementById('smtp-host').value = s.host;
+  if (s.port) document.getElementById('smtp-port').value = s.port;
+  if (s.user) document.getElementById('smtp-user').value = s.user;
+  if (s.fromName) document.getElementById('smtp-from-name').value = s.fromName;
+  if (s.fromEmail) document.getElementById('smtp-from-email').value = s.fromEmail;
+  if (s.secure === false) selectSecurity('tls');
+  else selectSecurity('ssl');
+}
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+loadSettings();
+loadDashboard();
+loadLists();
+toggleStep(1);
+</script>
+</body>
+</html>

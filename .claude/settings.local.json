@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item *)",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(Get-Content *)",
+      "Bash(node --experimental-sqlite server.js)",
+      "Bash(curl -s http://localhost:3000/api/stats)",
+      "Bash(kill %1)",
+      "Bash(node *)",
+      "PowerShell(node --version)",
+      "PowerShell(Start-Sleep -Seconds 1; Invoke-WebRequest -Uri \"http://localhost:3000/api/stats\" -UseBasicParsing 2>&1 | Select-Object StatusCode, Content)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/stats\" -UseBasicParsing; Write-Output \"STATUS: $\\($r.StatusCode\\)\"; Write-Output \"BODY: $\\($r.Content\\)\" } catch { Write-Output \"ERRO: $_\" })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing; Write-Output \"STATUS: $\\($r.StatusCode\\)\"; Write-Output \"CONTENT-TYPE: $\\($r.Headers['Content-Type']\\)\" } catch { Write-Output \"ERRO: $_\" })",
+      "PowerShell(node -e \"const { DatabaseSync } = require\\('node:sqlite'\\); console.log\\('sqlite OK sem flag'\\)\" 2>&1)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing; if \\($r.Content -match \"guide-step\"\\) { \"HTML atualizado OK - guia encontrado\" } else { \"PROBLEMA: guia nao encontrado no HTML\" } } catch { \"Servidor nao respondeu: $_\" })",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}
