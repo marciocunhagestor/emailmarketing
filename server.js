@@ -12,10 +12,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialise DB once; queue requests until ready
 let ready = false;
-const initPromise = initDb().then(() => { ready = true; });
+let initError = null;
+const initPromise = initDb().then(() => { ready = true; }).catch(err => { initError = err; ready = true; });
 
 app.use(async (req, res, next) => {
   if (!ready) await initPromise;
+  if (initError && req.path.startsWith('/api/')) {
+    return res.status(503).json({ error: 'Database unavailable', detail: initError.message });
+  }
   next();
 });
 
